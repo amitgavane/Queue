@@ -1,0 +1,123 @@
+#include <iostream>
+using namespace std;
+
+class CircularQueue {
+private:
+    int *queue;
+    int front, rear, size, capacity;
+
+public:
+    // Constructor to initialize the circular queue
+    CircularQueue(int capacity) {
+        this->capacity = capacity;
+        queue = new int[capacity];
+        front = -1;
+        rear = -1;
+        size = 0;
+    }
+
+    // Enqueue operation
+    void enqueue(int value) {
+        if (isFull()) {
+            cout << "Queue is full! Cannot enqueue.\n";
+            return;
+        }
+        if (front == -1) { // First element to be inserted
+            front = 0;
+        }
+        rear = (rear + 1) % capacity;
+        queue[rear] = value;
+        size++;
+        cout << value << " enqueued successfully.\n";
+    }
+
+    // Dequeue operation
+    void dequeue() {
+        if (isEmpty()) {
+            cout << "Queue is empty! Cannot dequeue.\n";
+            return;
+        }
+        cout << "Dequeued value: " << queue[front] << "\n";
+        front = (front + 1) % capacity;
+        size--;
+        if (size == 0) { // Reset to initial state if queue becomes empty
+            front = -1;
+            rear = -1;
+        }
+    }
+
+    // Print operation
+    void print() const {
+        if (isEmpty()) {
+            cout << "Queue is empty!\n";
+            return;
+        }
+        cout << "Queue contents: ";
+        int i = front;
+        for (int count = 0; count < size; count++) {
+            cout << queue[i] << " ";
+            i = (i + 1) % capacity;
+        }
+        cout << "\n";
+    }
+
+    // Check if the queue is full
+    bool isFull() const {
+        return size == capacity;
+    }
+
+    // Check if the queue is empty
+    bool isEmpty() const {
+        return size == 0;
+    }
+
+    // Destructor to free memory
+    ~CircularQueue() {
+        delete[] queue;
+    }
+};
+
+int main() {
+    int capacity;
+    cout << "Enter the capacity of the circular queue: ";
+    cin >> capacity;
+
+    CircularQueue cq(capacity);
+    int choice, value;
+
+    do {
+        // Display menu
+        cout << "\nCircular Queue Operations Menu:\n";
+        cout << "1. Enqueue (Add)\n";
+        cout << "2. Dequeue (Delete)\n";
+        cout << "3. Print Queue\n";
+        cout << "4. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: // Enqueue
+                cout << "Enter the value to enqueue: ";
+                cin >> value;
+                cq.enqueue(value);
+                break;
+
+            case 2: // Dequeue
+                cq.dequeue();
+                break;
+
+            case 3: // Print Queue
+                cq.print();
+                break;
+
+            case 4: // Exit
+                cout << "Exiting program. Goodbye!\n";
+                break;
+
+            default:
+                cout << "Invalid choice! Please try again.\n";
+        }
+    } while (choice != 4);
+
+    return 0;
+}
